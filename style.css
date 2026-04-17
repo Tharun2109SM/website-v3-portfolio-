@@ -1,0 +1,625 @@
+/* Custom Properties */
+@font-face {
+    font-family: 'Panchang';
+    src: url('./Panchang_Complete/Fonts/OTF/Panchang-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Panchang Light';
+    src: url('./Panchang_Complete/Fonts/OTF/Panchang-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Panchang Regular';
+    src: url('./Panchang_Complete/Fonts/OTF/Panchang-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Array Wide';
+    src: url('./FontshareKit-2604002291/Array/Fonts/OTF/Array-Wide.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Panchang Semibold';
+    src: url('./Panchang_Complete/Fonts/OTF/Panchang-Semibold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Panchang Extralight';
+    src: url('./Panchang_Complete/Fonts/OTF/Panchang-Extralight.otf') format('opentype');
+    font-weight: 200;
+    font-style: normal;
+}
+:root {
+    --color-bg: #050505;
+    --color-text: #ffffff;
+    --color-text-muted: rgba(255, 255, 255, 0.7);
+    --font-heading: 'Panchang', sans-serif;
+    --font-body: 'Panchang', sans-serif;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Background Video */
+.video-container {
+    position: fixed;
+    top: -5%;
+    left: -5%;
+    width: 110%; /* Extra width for mouse parallax effect */
+    height: 110%;
+    z-index: -1;
+    /* Subtly scale up and down */
+    animation: pulseScale 20s infinite alternate ease-in-out;
+}
+
+@keyframes pulseScale {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+.bg-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Subtle overlay removed for pure cinematic bright clouds */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent; /* Fully removed dark tint */
+    z-index: 2;
+}
+
+/* Hero Content */
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999; /* Highest priority to ensure it's in front */
+    text-align: center;
+    width: 100%;
+}
+
+.main-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.name {
+    display: block;
+    font-weight: 500;
+    font-size: clamp(4rem, 10vw, 8rem);
+    color: #ffffff;
+    position: relative;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.estd-text {
+    font-family: 'Panchang Light', sans-serif;
+    font-weight: 300;
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    margin-top: 16px;
+}
+
+.bottom-left-text {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    font-family: 'Panchang Regular', sans-serif;
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    z-index: 999;
+}
+
+.top-left-logo {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    font-family: 'Array Wide', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: #ffffff;
+    z-index: 999;
+}
+
+.top-right-time {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    color: #ffffff;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.time-label {
+    font-family: 'Panchang Regular', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0.8;
+}
+
+.time-display {
+    font-family: 'Panchang Light', sans-serif;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Animations */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Split text animation elements */
+.char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) rotateX(-40deg);
+}
+
+@keyframes charDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) rotateX(-40deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+    }
+}
+
+/* Premium Loader */
+#premium-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.15); /* Reduced dark tint */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#premium-loader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.glass-capsule {
+    background: rgba(255, 255, 255, 0.08); /* Slightly brighter frost */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    border-radius: 40px;
+    width: 95vw;
+    height: 95vh;
+    padding: 20px 50px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Subtle inner reflection */
+.glass-capsule::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.loader-text-window {
+    font-family: 'Panchang Extralight', sans-serif;
+    font-weight: 200;
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: #ffdde1; /* Subtle premium pink */
+    text-shadow: 0 0 10px rgba(255, 221, 225, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.loader-text-window.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.loader-text-window.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+/* Music Widget - Liquid Glass Style */
+.music-widget {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    animation-delay: 1.5s;
+    transform-origin: bottom right;
+}
+
+.music-inner {
+    position: relative;
+    width: 360px; /* Fixed sizing tightly shuts down any reflow jank */
+    height: 110px; /* Consistently high-capacity bounds */
+    will-change: transform;
+    transform: translateZ(0); /* Hardware accelerate component */
+    transform-origin: bottom right; /* Expand beautifully outward from the corner */
+    transition: transform 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.music-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.015);
+    backdrop-filter: blur(14px); /* Optimized down slightly for sharper performance */
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1; /* Keep isolated underneath content */
+    pointer-events: none;
+}
+
+.music-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 16px 20px;
+    z-index: 2; /* Safely floating above the composite filter layer */
+    transform: translateZ(0); /* Native hardware isolation */
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .music-widget:hover .music-inner {
+        transform: scale(1.02) translateY(-2px) translateZ(0); /* Pure GPU accelerated, instant feel */
+    }
+}
+
+.music-media {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    perspective: 1000px;
+}
+
+.music-album-art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    opacity: 0;
+    transform: scale(0.9) translateZ(0); /* Initial scale before load */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    will-change: transform, opacity;
+    transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.music-media.has-art .music-album-art {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+}
+
+.music-icon {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffdde1;
+    animation: pulseScale 3s infinite alternate ease-in-out;
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+    will-change: transform, opacity;
+    transition: opacity 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.music-media.has-art .music-icon {
+    opacity: 0;
+    transform: scale(0.6) translateZ(0);
+    pointer-events: none;
+}
+
+.music-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    flex-grow: 1;
+    overflow: hidden; /* Boundaries ensure massive titles never exceed the card */
+}
+
+.music-label {
+    position: relative;
+    font-family: 'Array Wide', sans-serif;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 2px;
+    transition: color 0.4s ease;
+    display: inline-block;
+}
+
+.music-label::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    margin-top: -3px; /* Vertically center the 6px dot */
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ffdde1;
+    box-shadow: 0 0 8px rgba(255, 221, 225, 0.8);
+    opacity: 0;
+    transform: scale(0.5);
+    visibility: hidden;
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+}
+
+.music-label.playing {
+    color: #ffdde1;
+    text-shadow: 0 0 8px rgba(255, 221, 225, 0.4);
+}
+
+.music-label.playing::before {
+    opacity: 1;
+    transform: scale(1);
+    visibility: visible;
+    animation: dotPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+}
+
+@keyframes dotPulse {
+    0% {
+        opacity: 0.3;
+        transform: scale(0.8);
+        box-shadow: 0 0 4px rgba(255, 221, 225, 0.2);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 12px rgba(255, 221, 225, 0.9);
+    }
+}
+
+.music-track {
+    font-family: 'Array Wide', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ffffff;
+    max-width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Natively holds full wrapping locally */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+    -webkit-font-smoothing: antialiased;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.music-artist {
+    font-family: 'Array Wide', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Never overflows widget bounds natively */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
+    -webkit-font-smoothing: antialiased;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* ==========================================
+   ABOUT PAGE STYLES
+   ========================================== */
+.about-section {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5vh 12% 20vh 12%; /* Reduced top spacing for tighter flow */
+}
+
+/* Transparent overlay to maintain layer stacking organically */
+.about-overlay-gradient {
+    position: absolute;
+    inset: 0;
+    background: transparent; /* Fully removed gradient dimming */
+    pointer-events: none;
+    z-index: 1;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Panchang Regular', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    z-index: 50;
+    opacity: 0;
+    animation: fadeInUp 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    animation-delay: 1.2s;
+}
+
+
+
+.about-content {
+    position: relative;
+    z-index: 10;
+    max-width: 680px;
+    color: #ffffff;
+}
+
+.about-heading {
+    font-family: 'Array Wide', sans-serif;
+    font-size: 4.5rem; /* Significantly scaled up */
+    font-weight: 400; /* Use native font weight to prevent synthetic bolding distortion */
+    line-height: 1.1;
+    margin-bottom: 40px;
+    white-space: nowrap; /* Forces text to stay aggressively on a single line */
+    opacity: 0;
+    transform: translateY(30px);
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Premium contrast layer */
+    transition: opacity 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Classic LEGO Block Colors for individual text spans */
+.lego-letter {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), text-shadow 0.4s ease;
+}
+
+.lego-letter:nth-child(1) { color: #E3000F; text-shadow: 0 4px 20px rgba(0,0,0,0.4); } /* Vibrant Red */
+.lego-letter:nth-child(2) { color: #0085C7; text-shadow: 0 4px 20px rgba(0,0,0,0.4); } /* Classic Blue */
+.lego-letter:nth-child(3) { color: #F2CD37; text-shadow: 0 4px 20px rgba(0,0,0,0.4); } /* Bold Yellow */
+.lego-letter:nth-child(4) { color: #009E44; text-shadow: 0 4px 20px rgba(0,0,0,0.4); } /* Solid Green */
+
+@media (hover: hover) and (pointer: fine) {
+    .lego-letter:nth-child(1):hover { transform: scale(1.05) translateY(-2px); text-shadow: 0 8px 30px rgba(227, 0, 15, 0.6); }
+    .lego-letter:nth-child(2):hover { transform: scale(1.05) translateY(-2px); text-shadow: 0 8px 30px rgba(0, 133, 199, 0.6); }
+    .lego-letter:nth-child(3):hover { transform: scale(1.05) translateY(-2px); text-shadow: 0 8px 30px rgba(242, 205, 55, 0.6); }
+    .lego-letter:nth-child(4):hover { transform: scale(1.05) translateY(-2px); text-shadow: 0 8px 30px rgba(0, 158, 68, 0.6); }
+}
+
+.about-paragraph {
+    font-family: 'Panchang Semibold', sans-serif; /* Explicit mapping to Panchang-Semibold.otf */
+    font-size: 1.05rem;
+    font-weight: 600; /* Natively align to the internal geometry of the typeface */
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.highlight {
+    color: #ffffff; /* Naturally pulls forward from the 0.75 opacity paragraph */
+    transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .highlight:hover {
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.35); /* Subtle bloom */
+    }
+}
+
+.about-paragraph p {
+    margin-bottom: 24px;
+    opacity: 0;
+    transform: translateY(20px);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); /* Subtly sharpens readable text against clouds */
+    transition: opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Staggered text reveal delays dynamically triggered */
+.about-paragraph p:nth-child(1) { transition-delay: 0.1s; }
+.about-paragraph p:nth-child(2) { transition-delay: 0.2s; }
+.about-paragraph p:nth-child(3) { transition-delay: 0.3s; }
+.about-paragraph p:nth-child(4) { transition-delay: 0.4s; }
+.about-paragraph p:nth-child(5) { transition-delay: 0.5s; }
+
+/* Trigger states exclusively bound by IntersectionObserver */
+.about-heading.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+.about-paragraph p.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
