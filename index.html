@@ -17,16 +17,17 @@
         </div>
     </div>
 
-    <!-- Global Background Video for Continuous Scroll -->
+    <!-- Global Background Video & Sequence Canvas -->
     <div class="video-container">
         <video autoplay loop muted playsinline class="bg-video">
             <source src="assets/bg-video.mp4" type="video/mp4">
         </video>
-        <div class="video-overlay"></div>
+        <canvas class="sequence-canvas"></canvas>
+        <div class="color-layer"></div>
     </div>
 
     <!-- Full-screen Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section" data-time="early-morning">
         <div class="top-left-logo">TH.</div>
 
         <!-- Hero Content -->
@@ -37,9 +38,9 @@
             <p class="estd-text">estd. 2007</p>
         </div>
         <div class="bottom-left-text">OUT OF CHENNAI, AROUND THE WORLD</div>
-        
+
         <div class="scroll-indicator">SCROLL TO DISCOVER</div>
-        
+
         <div class="top-right-time">
             <span class="time-label">LOCAL TIME</span>
             <span class="time-display" id="local-time"></span>
@@ -55,7 +56,8 @@
                     <div class="music-media">
                         <img id="music-album-art" class="music-album-art" src="" alt="">
                         <div class="music-icon" id="music-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M9 18V5l12-2v13"></path>
                                 <circle cx="6" cy="18" r="3"></circle>
                                 <circle cx="18" cy="16" r="3"></circle>
@@ -72,21 +74,139 @@
         </div>
     </section>
 
-    <!-- About Story Section (Continuous Scroll) -->
-    <section class="about-section">
-        <div class="about-overlay-gradient"></div>
-        <div class="about-content">
-            <h1 class="about-heading">It all started with <span class="lego-letter">L</span><span class="lego-letter">E</span><span class="lego-letter">G</span><span class="lego-letter">O</span>.</h1>
-            <div class="about-paragraph">
-                <p>I’ve been building for as long as I can remember. It started with Lego—spending hours putting pieces together, taking them apart, and rebuilding them in ways they weren’t meant to be. It was never just about following instructions. It was about <span class="highlight">curiosity</span>, <span class="highlight">experimenting</span>, and figuring things out on my own.</p>
-                <p>That mindset stayed with me.</p>
-                <p>Now, I build in a different medium. I’m constantly exploring, trying new things, and pushing ideas further than where they start. I like <span class="highlight">experimenting</span>—breaking things, refining them, and learning through the process. I’m especially drawn to <span class="highlight">UI/UX</span>, where the smallest details make the biggest difference—the way something moves, responds, or even pauses.</p>
-                <p>I don’t just want things to work. I want them to <span class="highlight">feel right</span>. Clean, intentional, and refined.</p>
-                <p>For me, it’s still the same process. Just different pieces.</p>
-            </div>
-        </div>
-    </section>
+    <!-- ==============================================
+         SCROLL PROGRESSION SYSTEM ROOT CONTAINER 
+         ============================================== -->
+    <div class="scroll-section">
 
+        <!-- Empty layout placeholders removed to restore sequence -->
+
+        <!-- About Story Section (Continuous Scroll) -->
+        <section class="about-section" data-time="late-morning">
+            <div class="about-overlay-gradient"></div>
+            <div class="lego-section">
+                <div class="lego-left">
+                    <h1 class="about-heading">
+                        <div>It all started with</div>
+                        <div class="lego-word"><span class="lego-letter">L</span><span class="lego-letter">E</span><span
+                                class="lego-letter">G</span><span class="lego-letter">O</span>.</div>
+                    </h1>
+                </div>
+                <div class="lego-right">
+                    <div class="about-paragraph lego-text">
+                        <p>I’ve been building for as long as I can remember. It started with Lego—spending hours putting
+                            pieces together, taking them apart, and rebuilding them in ways they weren’t meant to be. It
+                            was never just about following instructions. It was about <span
+                                class="highlight">curiosity</span>, <span class="highlight">experimenting</span>, and
+                            figuring things out on my own.</p>
+                        <p>That mindset stayed with me.</p>
+                        <p>Now, I build in a different medium. I’m constantly exploring, trying new things, and pushing
+                            ideas further than where they start. I like <span
+                                class="highlight">experimenting</span>—breaking things, refining them, and learning
+                            through the process. I’m especially drawn to <span class="highlight">UI/UX</span>, where the
+                            smallest details make the biggest difference—the way something moves, responds, or even
+                            pauses.</p>
+                        <p>I don’t just want things to work. I want them to <span class="highlight">feel right</span>.
+                            Clean, intentional, and refined.</p>
+                        <p>For me, it’s still the same process. Just different pieces.</p>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+        <!-- Noon Section (Cursor-based Text Mask Effect) -->
+        <section class="quote-section" data-time="noon">
+            <div class="quote-container">
+                <div class="quote-text base-text">
+                    <div class="line">SMASHING SHUTTLES.</div>
+                    <div class="line">BUILDING THINGS.</div>
+                    <div class="line">HAVING FUN.</div>
+                </div>
+                <div class="quote-text thin-text" aria-hidden="true">
+                    <div class="line">SMASHING SHUTTLES.</div>
+                    <div class="line">BUILDING THINGS.</div>
+                    <div class="line">HAVING FUN.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Golden Hour Section (Personal Narrative) -->
+        <section class="beyond-section" data-time="golden-hour">
+            <div class="pace-container">
+                <div class="pace-left">
+                    <div class="pace-paragraph">
+                        <p>I play badminton competitively — the rhythm, the timing, the quiet intensity of it.<br>I
+                            follow the game just as closely as I play it.</p>
+                        <p>Cycling is where I reset.<br>Gears shifting, wind cutting through, everything else fading
+                            out.</p>
+                        <p>Lately, I’ve been learning tennis — figuring it out as I go, one mistake at a time.</p>
+                        <p>I play the keys when things need to slow down.<br>Something about it feels steady. Grounded.
+                        </p>
+                        <p>And somewhere in between all of this,<br>you’ll probably find me watching Formula 1
+                            —<br>speed, precision, and machines pushed to their edge.</p>
+                    </div>
+                </div>
+                <div class="pace-right">
+                    <h2 class="pace-heading">
+                        <div class="pace-heading-top">Where I find</div>
+                        <div class="pace-heading-middle">my</div>
+                        <div class="pace-word">PACE.</div>
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sunset Section (Jack of all trades quote) -->
+        <section class="master-quote-section" data-time="sunset">
+            <div class="master-quote-container">
+                <div class="line-1">Jack of all trades,</div>
+                <div class="line-2">master of none, but oftentimes</div>
+                <div class="line-3">better than master of one.</div>
+            </div>
+        </section>
+
+        <!-- Dusk Section (Gear Horizontal Carousel) -->
+        <section class="gear-section" data-time="dusk">
+            <div class="gear-sticky-container">
+                <h1 class="gig-title">DEVELOPMENT GIG</h1>
+                <div class="gear-track">
+                    <div class="gear-item" data-index="0">
+                        <div class="gear-glass">
+                            <img src="assets/macbook.png" alt="MacBook">
+                            <h2>MacBook Pro M4 Pro</h2>
+                        </div>
+                    </div>
+                    <div class="gear-item" data-index="1">
+                        <div class="gear-glass">
+                            <img src="assets/ipad.png" alt="iPad">
+                            <h2>iPad (9th Generation)</h2>
+                        </div>
+                    </div>
+                    <div class="gear-item" data-index="2">
+                        <div class="gear-glass">
+                            <img src="assets/iphone.png" alt="iPhone">
+                            <h2>iPhone 16</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Night Section -->
+        <section class="placeholder-section" data-time="night"></section>
+
+        <!-- Late Night Section -->
+        <section class="placeholder-section" data-time="late-night"></section>
+
+        <!-- Midnight Section -->
+        <section class="placeholder-section" data-time="midnight"></section>
+
+    </div> <!-- End Scroll Section -->
+
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
 </body>
 

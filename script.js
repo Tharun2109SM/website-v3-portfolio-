@@ -1,15 +1,55 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Initialize Lenis
+    const lenis = new Lenis({
+        duration: 0.9,
+        lerp: 0.07,
+        smoothWheel: true,
+        smoothTouch: false,
+        wheelMultiplier: 1.0
+    });
+
+    // Generate Seamless Typographic Texture for Quote Section
+    document.fonts.ready.then(() => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const scale = window.devicePixelRatio || 2; // Retina Support
+        const textStr = "SMASHING SHUTTLES BUILDING THINGS HAVING FUN ";
+
+        // Base measurement (1x scale)
+        ctx.font = '700 13px system-ui, -apple-system, sans-serif';
+        const rawWidth = ctx.measureText(textStr).width;
+
+        // Scale canvas memory bounds
+        canvas.width = rawWidth * scale;
+        canvas.height = 60 * scale;
+
+        // Upscale rendering context
+        ctx.scale(scale, scale);
+
+        ctx.font = '700 13px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; // Slight premium opacity
+        ctx.textBaseline = 'middle';
+
+        // Draw rows with alternating offsets for texture density
+        ctx.fillText(textStr, 0, 15);
+        ctx.fillText(textStr, -rawWidth / 2, 45);
+        ctx.fillText(textStr, rawWidth / 2, 45);
+
+        document.documentElement.style.setProperty('--quote-texture', `url(${canvas.toDataURL()})`);
+    });
+
     // Premium Loader Sequence
     const loader = document.getElementById('premium-loader');
     const loaderText = document.getElementById('loader-text');
-    
+
     if (loader && loaderText) {
         const words = ["Creator", "Builder", "Designer"];
         let currentIndex = 0;
-        
+
         // Setup initial text
         loaderText.textContent = words[0];
-        
+
         const cycleText = () => {
             // Animate In
             setTimeout(() => {
@@ -25,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 loaderText.className = 'loader-text-window'; // Reset to bottom
                 currentIndex++;
-                
+
                 if (currentIndex < words.length) {
                     loaderText.textContent = words[currentIndex];
                     cycleText();
@@ -37,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }, 1500);
         };
-        
+
         // Start cycle
         cycleText();
     }
@@ -51,12 +91,12 @@ document.addEventListener("DOMContentLoaded", () => {
             let minutes = now.getMinutes();
             let seconds = now.getSeconds();
             const ampm = hours >= 12 ? 'PM' : 'AM';
-            
+
             hours = hours % 12;
             hours = hours ? hours : 12;
             minutes = minutes < 10 ? '0' + minutes : minutes;
             seconds = seconds < 10 ? '0' + seconds : seconds;
-            
+
             timeDisplay.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
         };
         updateTime();
@@ -75,10 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
     splitTextElements.forEach(element => {
         // Name split character animation
         const nameSpan = element.querySelector('.name');
-        if(nameSpan) {
+        if (nameSpan) {
             const text = nameSpan.textContent;
             nameSpan.textContent = '';
-            
+
             // Create a span for each character for staggered animation
             text.split('').forEach((char, index) => {
                 const charSpan = document.createElement('span');
@@ -94,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 nameSpan.appendChild(charSpan);
             });
         }
-        
+
         // Removed greeting span handled
     });
 
@@ -104,20 +144,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (videoContainer && heroSection) {
         let isHovering = false;
-        
+
         heroSection.addEventListener('mousemove', (e) => {
             if (!isHovering) return;
-            
+
             // Calculate mouse position relative to the center of the screen
             const x = (e.clientX / window.innerWidth - 0.5) * 20; // Max 20px translation
             const y = (e.clientY / window.innerHeight - 0.5) * 20;
-            
+
             // Apply slight transform to the video container based on mouse position
             requestAnimationFrame(() => {
                 videoContainer.style.transform = `translate(${-x}px, ${-y}px) scale(1.05)`;
             });
         });
-        
+
         // Reset when mouse leaves
         heroSection.addEventListener('mouseleave', () => {
             isHovering = false;
@@ -126,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 videoContainer.style.transition = `transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1)`;
             });
         });
-        
+
         // Remove transition during mousemove for instant precise feedback
         heroSection.addEventListener('mouseenter', () => {
             isHovering = true;
@@ -145,10 +185,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const musicLabel = document.getElementById('music-label');
     const musicTrack = document.getElementById('music-track');
     const musicArtist = document.getElementById('music-artist');
-    
+
     if (musicLabel && musicTrack && musicArtist) {
         let currentTrackName = '';
-        
+
         const updateNowPlaying = async () => {
             if (LASTFM_USERNAME === 'YOUR_LASTFM_USERNAME' || LASTFM_API_KEY === 'YOUR_LASTFM_API_KEY') {
                 musicLabel.textContent = 'Setup Required';
@@ -162,20 +202,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LASTFM_USERNAME}&api_key=${LASTFM_API_KEY}&format=json&limit=1&t=${timestamp}`;
                 const response = await fetch(url, { cache: 'no-store' });
                 if (!response.ok) throw new Error('Network response was not ok');
-                
+
                 const data = await response.json();
-                
+
                 if (data.recenttracks && data.recenttracks.track && data.recenttracks.track.length > 0) {
                     const track = data.recenttracks.track[0];
                     const isPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
-                    
+
                     const newTrackName = track.name;
                     const newArtistName = track.artist['#text'];
-                    
+
                     // Only apply transition if track changed
                     if (currentTrackName !== newTrackName) {
                         currentTrackName = newTrackName;
-                        
+
                         // Extract album art
                         const images = track.image;
                         let imageUrl = '';
@@ -183,14 +223,14 @@ document.addEventListener("DOMContentLoaded", () => {
                             const largeImage = images.find(img => img.size === 'extralarge') || images.find(img => img.size === 'large') || images[images.length - 1];
                             imageUrl = largeImage ? largeImage['#text'] : '';
                         }
-                        
+
                         const musicMedia = document.querySelector('.music-media');
                         const musicAlbumArt = document.getElementById('music-album-art');
-                        
+
                         // Fade out
                         musicTrack.style.opacity = '0';
                         musicArtist.style.opacity = '0';
-                        
+
                         setTimeout(() => {
                             musicTrack.textContent = newTrackName;
                             musicArtist.textContent = newArtistName;
@@ -201,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 musicLabel.textContent = 'Not listening';
                                 musicLabel.classList.remove('playing');
                             }
-                            
+
                             if (imageUrl && musicAlbumArt && musicMedia) {
                                 musicAlbumArt.src = imageUrl;
                                 musicMedia.classList.add('has-art');
@@ -209,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 musicAlbumArt.src = '';
                                 musicMedia.classList.remove('has-art');
                             }
-                            
+
                             // Fade in
                             musicTrack.style.opacity = '1';
                             musicArtist.style.opacity = '1';
@@ -261,7 +301,389 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }, scrollObserverOptions);
 
-    // Observe heading and all paragraphs
-    const animatedElements = document.querySelectorAll('.about-heading, .about-paragraph p');
+    // Observe heading, paragraphs, quotes, beyond section, and master quote
+    const animatedElements = document.querySelectorAll('.about-heading, .about-paragraph p, .quote-section, .beyond-section, .master-quote-section');
     animatedElements.forEach(el => scrollObserver.observe(el));
+
+    // ==========================================
+    // ADVANCED CINEMATIC WEATHER ENGINE (VIDEO SCRUBBING & GRADIENTS)
+    // ==========================================
+
+    const videoElement = document.querySelector('.bg-video');
+    const overlayElement = document.querySelector('.color-layer');
+    const sequenceCanvas = document.querySelector('.sequence-canvas');
+    let seqCtx = null;
+
+    if (sequenceCanvas) {
+        seqCtx = sequenceCanvas.getContext('2d');
+        // Initial setup for 4K 16:9 aspect
+        sequenceCanvas.width = 3840;
+        sequenceCanvas.height = 2160;
+    }
+
+    // ==========================================
+    // IMAGE SEQUENCE PRELOADER (4K ASSETS)
+    // ==========================================
+    const totalFrames = 200;
+    const frames = [];
+    let loadedCount = 0;
+
+    for (let i = 1; i <= totalFrames; i++) {
+        const img = new Image();
+        // Assuming sequence images fall into this path layout format
+        img.src = `assets/sequence/frame_${i.toString().padStart(4, '0')}.jpg`;
+        img.onload = () => {
+            loadedCount++;
+        };
+        frames.push(img);
+    }
+
+    // Remove background-color transitioning CSS fighting with our JS loop
+    if (overlayElement) overlayElement.style.transition = 'none';
+
+    // Milestones matrix defining the profound atmospheric curve [ pct, brightness, UI_Dim, topGradient[RGBA], midGradient[RGBA], botGradient[RGBA] ]
+    const milestones = [
+        // Early Morning - Vivid pink + orange
+        {
+            pct: 0.00, b: 1.05, ui_dim: 1.00,
+            top: [255, 120, 80, 0.55], mid: [255, 100, 120, 0.50], bot: [255, 80, 160, 0.45]
+        },
+
+        // Morning - Clean sky blue
+        {
+            pct: 0.15, b: 1.00, ui_dim: 1.00,
+            top: [120, 190, 255, 0.40], mid: [150, 210, 255, 0.35], bot: [180, 225, 255, 0.30]
+        },
+
+        // Noon - Brightest, crisp, slight cyan
+        {
+            pct: 0.30, b: 1.05, ui_dim: 1.00,
+            top: [50, 170, 255, 0.45], mid: [0, 200, 255, 0.40], bot: [0, 220, 255, 0.35]
+        },
+
+        // Golden Hour - Soft golden cinematic warmth
+        {
+            pct: 0.45, b: 1.00, ui_dim: 0.90,
+            top: [255, 200, 120, 0.45], mid: [255, 180, 90, 0.40], bot: [255, 160, 70, 0.35]
+        },
+
+        // Sunset - Strong contrast, orange + pink + purple
+        {
+            pct: 0.60, b: 0.85, ui_dim: 0.80,
+            top: [255, 120, 90, 0.55], mid: [200, 90, 200, 0.45], bot: [80, 40, 150, 0.40]
+        },
+
+        // Dusk - Muted blue
+        {
+            pct: 0.75, b: 0.65, ui_dim: 0.60,
+            top: [60, 90, 130, 0.50], mid: [50, 70, 110, 0.45], bot: [40, 60, 90, 0.40]
+        },
+
+        // Night - Deep dark blue, minimal light
+        {
+            pct: 0.88, b: 0.30, ui_dim: 0.35,
+            top: [10, 20, 40, 0.70], mid: [15, 30, 60, 0.65], bot: [20, 40, 80, 0.60]
+        },
+
+        // Midnight - Near black
+        {
+            pct: 0.96, b: 0.15, ui_dim: 0.15,
+            top: [0, 0, 0, 0.92], mid: [5, 5, 10, 0.94], bot: [10, 10, 20, 0.96]
+        },
+
+        // End of Scroll (Hold Midnight)
+        {
+            pct: 1.00, b: 0.15, ui_dim: 0.15,
+            top: [0, 0, 0, 0.92], mid: [5, 5, 10, 0.94], bot: [10, 10, 20, 0.96]
+        }
+    ];
+
+    function lerp(start, end, amt) {
+        return (1 - amt) * start + amt * end;
+    }
+
+    function lerpArr(a1, a2, t) {
+        return [
+            Math.round(lerp(a1[0], a2[0], t)),
+            Math.round(lerp(a1[1], a2[1], t)),
+            Math.round(lerp(a1[2], a2[2], t)),
+            lerp(a1[3], a2[3], t).toFixed(3)
+        ];
+    }
+
+    let targetProgress = 0;
+    let smoothScroll = 0;
+    let displayProgress = 0;
+    let displayQuoteProgress = 0; // Cinematic tracking specifically for depth-driven typography scrubbing
+    let velocity = 0;
+    let lastFrame = -1;
+
+    // ==========================================
+    // GSAP SCROLLTRIGGER SETUP FOR GEAR SECTION
+    // ==========================================
+    const gearSection = document.querySelector('.gear-section');
+    const gearTrack = document.querySelector('.gear-track');
+    const gearItems = document.querySelectorAll('.gear-item');
+
+    if (gearSection && gearTrack && gearItems.length > 0) {
+        // Sync GSAP ticker with Lenis
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+        
+        lenis.on('scroll', ScrollTrigger.update);
+
+        function getScrollAmount() {
+            let trackWidth = gearTrack.scrollWidth;
+            return -(trackWidth - window.innerWidth);
+        }
+
+        const tween = gsap.to(gearTrack, {
+            x: getScrollAmount,
+            ease: "none"
+        });
+
+        ScrollTrigger.create({
+            trigger: gearSection,
+            start: "top top",
+            end: () => `+=${getScrollAmount() * -1}`,
+            pin: true,
+            animation: tween,
+            scrub: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+                const total = gearItems.length;
+                let activeFloat = self.progress * (total - 1);
+                let closestIndex = Math.round(activeFloat);
+                
+                gearItems.forEach((item, i) => {
+                    if (i === closestIndex) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+        });
+    }
+
+    // Set initial cinematic hero playback rate
+    if (videoElement) {
+        videoElement.playbackRate = 0.7;
+        videoElement.muted = true;
+        videoElement.play().catch(() => { });
+        // Always display canvas natively
+        if (sequenceCanvas) {
+            sequenceCanvas.style.display = 'block';
+        }
+    }
+
+    lenis.on('scroll', (e) => {
+        const scroll = e.scroll;
+        const limit = e.limit;
+
+        smoothScroll = scroll;
+        targetProgress = Math.max(0, Math.min(1, scroll / limit));
+    });
+
+    function renderCinematicEngine(time) {
+        // lenis.raf is now handled by gsap.ticker to avoid double-calling
+
+        // High-stability velocity-based smoothing specifically bound to the isolated image scrubber
+        displayProgress += (targetProgress - displayProgress) * 0.08;
+
+        // Locate correct milestone brackets
+        let m1 = milestones[0];
+        let m2 = milestones[milestones.length - 1];
+
+        for (let i = 0; i < milestones.length - 1; i++) {
+            if (displayProgress >= milestones[i].pct && displayProgress <= milestones[i + 1].pct) {
+                m1 = milestones[i];
+                m2 = milestones[i + 1];
+                break;
+            }
+        }
+
+        // Calculate fractional progression exclusively between the two active milestones
+        const range = m2.pct - m1.pct;
+        const localProgress = range > 0 ? (displayProgress - m1.pct) / range : 0;
+
+        // Interpolate CSS Variable Filters & UI Alpha
+        const currentB = lerp(m1.b, m2.b, localProgress).toFixed(3);
+        const currentUIDim = lerp(m1.ui_dim, m2.ui_dim, localProgress).toFixed(3);
+
+        // Multi-stop Gradients linearly merged
+        const cTop = lerpArr(m1.top, m2.top, localProgress);
+        const cMid = lerpArr(m1.mid, m2.mid, localProgress);
+        const cBot = lerpArr(m1.bot, m2.bot, localProgress);
+
+        // Apply visual updates using deep hardware composition
+        if (overlayElement) {
+            overlayElement.style.backgroundImage = `linear-gradient(to bottom, rgba(${cTop.join(',')}), rgba(${cMid.join(',')}), rgba(${cBot.join(',')}))`;
+            overlayElement.style.backgroundColor = 'transparent'; // Fallback wipe
+        }
+        // Advanced seamless crossover tracking
+        if (videoElement && sequenceCanvas) {
+            const scrollY = smoothScroll;
+            const heroHeight = window.innerHeight;
+
+            // Initiate transition blend far earlier natively crossing over viewport states
+            const transitionStart = heroHeight * 0.5;
+            const transitionEnd = heroHeight * 1.0;
+
+            // Construct eased interpolation metric overriding linear jump
+            const rawT = Math.max(0, Math.min(1, (scrollY - transitionStart) / (transitionEnd - transitionStart)));
+            const t = 1 - Math.pow(1 - rawT, 3); // ease-out cubic
+
+            videoElement.style.opacity = 1 - t;
+            sequenceCanvas.style.opacity = t;
+
+            // Keep playback continuous until transition explicitly overrides
+            if (t >= 0.95 && !videoElement.paused) {
+                videoElement.pause();
+            } else if (t < 0.95 && videoElement.paused) {
+                videoElement.playbackRate = 0.7;
+                videoElement.play().catch(() => { });
+            }
+
+            videoElement.style.filter = `brightness(${currentB})`;
+        }
+
+        // DIRECT MAPPED CANVAS SEQUENCE RENDERING 
+        if (seqCtx && loadedCount >= totalFrames * 0.9) {
+            let frameIndex = 0;
+
+            const scrollY = smoothScroll;
+            const transitionStart = window.innerHeight * 0.5;
+
+            // Hook to live video playback natively when scrolling before the transition overrides
+            if (scrollY < transitionStart && videoElement && videoElement.duration > 0) {
+                const videoProgress = videoElement.currentTime / videoElement.duration;
+                frameIndex = Math.floor(videoProgress * (totalFrames - 1));
+            } else {
+                frameIndex = Math.floor(displayProgress * (totalFrames - 1));
+            }
+
+            // Constrain arrays
+            frameIndex = Math.max(0, Math.min(frameIndex, totalFrames - 1));
+
+            if (frameIndex !== lastFrame && frames[frameIndex] && frames[frameIndex].complete) {
+                seqCtx.clearRect(0, 0, sequenceCanvas.width, sequenceCanvas.height);
+                seqCtx.drawImage(frames[frameIndex], 0, 0, sequenceCanvas.width, sequenceCanvas.height);
+                // In scroll mode, apply atmospheric video filters exactly identically to the canvas rendering
+                sequenceCanvas.style.filter = `brightness(${currentB})`;
+                lastFrame = frameIndex;
+            }
+        }
+
+        // Seamlessly update UI Dimming properties mapping down to foreground layout elements
+        document.documentElement.style.setProperty('--ui-dim', currentUIDim);
+
+        // ==========================================
+        // QUOTE SECTION SMOOTH SCROLL FADE OUT
+        // ==========================================
+        const quoteSection = document.querySelector('.quote-section');
+        if (quoteSection) {
+            const rect = quoteSection.getBoundingClientRect();
+            // Scale raw progression natively ONLY as section pushes towards the upper half of screen (Leaving the viewport upwards)
+            // rect.top < 0 means moving past center.
+            const rawQuoteProgress = Math.max(0, Math.min(1, (-rect.top) / (window.innerHeight * 0.5)));
+
+            // Core cinematic Apple-smooth inertia interpolation
+            displayQuoteProgress += (rawQuoteProgress - displayQuoteProgress) * 0.08;
+
+            const quoteContainer = quoteSection.querySelector('.quote-container');
+            if (quoteContainer) {
+                if (displayQuoteProgress > 0.001) {
+                    const normalizedLineProgress = Math.max(0, Math.min(1, displayQuoteProgress));
+
+                    const fadeOutOpacity = 1 - normalizedLineProgress;
+                    const scaleOutTransform = 1 - (normalizedLineProgress * 0.08);
+
+                    quoteContainer.style.transform = `translateY(0) scale(${scaleOutTransform})`;
+                    quoteContainer.style.opacity = `${fadeOutOpacity}`;
+                    quoteContainer.style.transition = 'none'; // Lock out CSS gracefully during scrub
+                } else if (quoteSection.classList.contains('in-view')) {
+                    // Fully reset rendering strings so CSS engine handles entry float seamlessly
+                    quoteContainer.style.transform = '';
+                    quoteContainer.style.opacity = '1';
+                    quoteContainer.style.transition = '';
+                }
+            }
+        }
+
+        // ==========================================
+        // PACE WORD SCROLL ANIMATION
+        // ==========================================
+        const paceEl = document.querySelector('.pace-word');
+        if (paceEl) {
+            const rect = paceEl.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+
+            // Only calculate if visible
+            if (rect.top < viewportHeight && rect.bottom > 0) {
+                // Normalize position (center of screen = strongest effect)
+                const centerOffset = Math.abs((rect.top + rect.height / 2) - viewportHeight / 2);
+                const maxOffset = viewportHeight / 2;
+                
+                const t = Math.max(0, 1 - Math.min(centerOffset / maxOffset, 1)); // 0 at edges, 1 at center
+                
+                // Smooth effect
+                const scale = 1 + (t * 0.08); // max 1.08
+                const glow = t * 8; // subtle glow
+                
+                paceEl.style.transform = `scale(${scale})`;
+                paceEl.style.textShadow = `0 0 ${glow}px rgba(255,255,255,0.4)`;
+            }
+        }
+
+        // Gear section scroll logic moved to GSAP ScrollTrigger
+
+        // Keep running infinity render loop
+        window.requestAnimationFrame(renderCinematicEngine);
+    }
+
+    // Initialize rendering engine continuously
+    requestAnimationFrame(renderCinematicEngine);
+
+    // ==========================================
+    // CURSOR TEXT MASK EFFECT (QUOTE SECTION)
+    // ==========================================
+    const quoteSectionEl = document.querySelector('.quote-section');
+    const thinTextEl = document.querySelector('.thin-text');
+
+    if (quoteSectionEl && thinTextEl) {
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let cursorX = mouseX;
+        let cursorY = mouseY;
+
+        // Track mouse position relative to the thin text container
+        quoteSectionEl.addEventListener('mousemove', (e) => {
+            const rect = thinTextEl.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+
+        function animateCursorMask() {
+            // Smooth interpolation (lerp)
+            cursorX += (mouseX - cursorX) * 0.12;
+            cursorY += (mouseY - cursorY) * 0.12;
+
+            // Only update DOM if section is somewhat in view to save performance
+            const rect = quoteSectionEl.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                thinTextEl.style.setProperty('--cursor-x', `${cursorX}px`);
+                thinTextEl.style.setProperty('--cursor-y', `${cursorY}px`);
+            }
+
+            requestAnimationFrame(animateCursorMask);
+        }
+
+        // Start animation loop
+        requestAnimationFrame(animateCursorMask);
+    }
 });
+
+

@@ -35,12 +35,21 @@
     font-weight: 200;
     font-style: normal;
 }
+@font-face {
+    font-family: 'Panchang Extrabold';
+    src: url('./Panchang_Complete/Fonts/OTF/Panchang-Extrabold.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+}
 :root {
     --color-bg: #050505;
     --color-text: #ffffff;
     --color-text-muted: rgba(255, 255, 255, 0.7);
     --font-heading: 'Panchang', sans-serif;
     --font-body: 'Panchang', sans-serif;
+    
+    /* Cinematic UI Fade Hooks controlled by continuous JS loop */
+    --ui-dim: 1;
 }
 
 /* Reset and Base Styles */
@@ -50,18 +59,39 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: auto;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
 body {
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+img, video, canvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Global UI Fade & Immersion Hook */
+section {
+    opacity: var(--ui-dim);
+    /* Soften the contrast while dimming so it feels like natural light fading away */
+    filter: brightness(calc(0.6 + var(--ui-dim) * 0.4)) contrast(var(--ui-dim));
 }
 
 /* Hero Section */
 .hero-section {
     position: relative;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -86,21 +116,29 @@ body {
     100% { transform: scale(1.05); }
 }
 
-.bg-video {
+.bg-video, .sequence-canvas {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
 }
 
-/* Subtle overlay removed for pure cinematic bright clouds */
-.video-overlay {
+.sequence-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: none; /* Hidden by default until scroll bounds are reached */
+}
+
+/* Base transparent state before gradient logic */
+.color-layer {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: transparent; /* Fully removed dark tint */
+    background: transparent; 
     z-index: 2;
 }
 
@@ -170,7 +208,7 @@ body {
     top: 40px;
     right: 40px;
     color: #ffffff;
-    z-index: 9999;
+    z-index: 999;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -507,10 +545,11 @@ body {
 .about-section {
     position: relative;
     width: 100%;
+    min-height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: 5vh 12% 20vh 12%; /* Reduced top spacing for tighter flow */
+    justify-content: space-between;
+    padding: 0;
 }
 
 /* Transparent overlay to maintain layer stacking organically */
@@ -540,20 +579,48 @@ body {
 
 
 
-.about-content {
+.lego-section {
     position: relative;
     z-index: 10;
-    max-width: 680px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    align-items: center;
+    gap: 90px;
     color: #ffffff;
 }
 
+.lego-left {
+    text-align: left;
+    padding-left: 6vw;
+}
+
+.lego-right {
+    text-align: left;
+    justify-self: start;
+    padding-left: 6vw;
+    align-self: center;
+    transform: translateX(-5%);
+}
+
+.lego-text {
+    max-width: 560px;
+}
+
+@media (max-width: 900px) {
+    .lego-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
 .about-heading {
-    font-family: 'Array Wide', sans-serif;
-    font-size: 4.5rem; /* Significantly scaled up */
+    font-family: 'Panchang Regular', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
     font-weight: 400; /* Use native font weight to prevent synthetic bolding distortion */
     line-height: 1.1;
-    margin-bottom: 40px;
-    white-space: nowrap; /* Forces text to stay aggressively on a single line */
+    margin-bottom: 0;
+    white-space: normal; /* Let the new explicit divs handle the wrapping */
     opacity: 0;
     transform: translateY(30px);
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Premium contrast layer */
@@ -579,11 +646,19 @@ body {
     .lego-letter:nth-child(4):hover { transform: scale(1.05) translateY(-2px); text-shadow: 0 8px 30px rgba(0, 158, 68, 0.6); }
 }
 
+.lego-word {
+    font-family: 'Panchang Semibold', sans-serif;
+    font-size: 1.6em;
+    margin-top: 10px;
+    line-height: 1;
+    margin-left: -0.1em; /* Optically align 'L' with text above */
+}
+
 .about-paragraph {
-    font-family: 'Panchang Semibold', sans-serif; /* Explicit mapping to Panchang-Semibold.otf */
+    font-family: 'Panchang Regular', sans-serif; /* Explicit mapping to Panchang-Regular.otf */
     font-size: 1.05rem;
-    font-weight: 600; /* Natively align to the internal geometry of the typeface */
-    line-height: 1.8;
+    font-weight: 400; /* Natively align to the internal geometry of the typeface */
+    line-height: 1.7;
     color: rgba(255, 255, 255, 0.75);
 }
 
@@ -600,11 +675,16 @@ body {
 
 .about-paragraph p {
     margin-bottom: 24px;
+    break-inside: avoid;
     opacity: 0;
     transform: translateY(20px);
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); /* Subtly sharpens readable text against clouds */
     transition: opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1), 
                 transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.about-paragraph p:last-child {
+    margin-bottom: 0; /* Prevents container from stretching bounds */
 }
 
 /* Staggered text reveal delays dynamically triggered */
@@ -622,4 +702,643 @@ body {
 .about-paragraph p.in-view {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* ==========================================
+   ULTRA-REALISTIC 4K GLASS LEGO METAPHOR
+   ========================================== */
+.about-visuals {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    flex-shrink: 0;
+    margin-left: 40px;
+    z-index: 50;
+    perspective: 1000px;
+}
+
+@media (max-width: 900px) {
+    .about-visuals {
+        transform: scale(0.65) translateX(30px);
+        margin-left: 0;
+    }
+}
+
+.lego-brick {
+    --lego-unit: 36px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    
+    /* Authentic Atmosphere Integration */
+    background: var(--brick-color);
+    backdrop-filter: blur(8px) saturate(1.2);
+    -webkit-backdrop-filter: blur(8px) saturate(1.2);
+    mix-blend-mode: soft-light; /* Melts directly into the cloud volume */
+    border-radius: 3px;
+    opacity: 0.85; /* Cinematic transparency */
+    
+    /* Soft global lighting */
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    
+    /* Natural ambient occlusion and soft distance drop-shadow, ZERO neon glow */
+    box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.15),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.1),
+        0 15px 35px rgba(0, 0, 0, 0.2);
+    
+    /* Depth of Field Blur */
+    filter: blur(var(--depth-blur, 0px));
+
+    /* Structural Grid System mapped exactly to studs */
+    display: grid;
+    gap: 0;
+    padding: 0;
+    
+    /* Float & Layout Logic */
+    --tx: 0px; --ty: 0px; --rot: 0deg; --s: 1; --z: 1;
+    /* Origin center mapping to make math easier */
+    margin-top: calc(var(--ty) - 50%);
+    margin-left: calc(var(--tx) - 50%);
+    transform: rotate(var(--rot)) scale(var(--s));
+    z-index: var(--z);
+    
+    opacity: 0; 
+    transition: opacity 2s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 1s ease;
+    animation: cinematicFloat var(--float-speed, 8s) ease-in-out infinite alternate;
+}
+
+/* Photorealistic Internal Glass Wall Thickness */
+.lego-brick::before {
+    content: '';
+    position: absolute;
+    inset: 3px; /* Simulating 3px wall thickness */
+    border-radius: 1px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 
+        inset 0 0 10px rgba(0, 0, 0, 0.15),
+        0 0 4px rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Photorealistic Surface Gloss / Reflection */
+.lego-brick::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(115deg, 
+        rgba(255,255,255,0) 0%, 
+        rgba(255,255,255,0.01) 35%, 
+        rgba(255,255,255,0.4) 40%, 
+        rgba(255,255,255,0) 45%);
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+    z-index: 20;
+}
+
+@keyframes cinematicFloat {
+    0% { transform: rotate(var(--rot)) scale(var(--s)) translateY(0px) rotateX(0deg); }
+    100% { transform: rotate(calc(var(--rot) + 2deg)) scale(var(--s)) translateY(-15px) rotateX(2deg); }
+}
+
+/* Precision Grid Sizing */
+.size-1x1 { width: var(--lego-unit); height: var(--lego-unit); grid-template-columns: 1fr; grid-template-rows: 1fr; }
+.size-1x2 { width: calc(var(--lego-unit) * 2); height: var(--lego-unit); grid-template-columns: repeat(2, 1fr); grid-template-rows: 1fr; }
+.size-2x2 { width: calc(var(--lego-unit) * 2); height: calc(var(--lego-unit) * 2); grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
+.size-2x3 { width: calc(var(--lego-unit) * 3); height: calc(var(--lego-unit) * 2); grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); }
+.size-2x4 { width: calc(var(--lego-unit) * 4); height: calc(var(--lego-unit) * 2); grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); }
+
+/* Cinematic Muted LEGO Colors */
+.color-red {
+    --brick-color: rgba(180, 40, 40, 0.25);
+    --stud-highlight: rgba(200, 100, 100, 0.3);
+}
+.color-blue {
+    --brick-color: rgba(40, 100, 180, 0.25);
+    --stud-highlight: rgba(100, 150, 200, 0.3);
+}
+.color-yellow {
+    --brick-color: rgba(200, 170, 40, 0.25);
+    --stud-highlight: rgba(220, 200, 100, 0.3);
+}
+.color-green {
+    --brick-color: rgba(40, 140, 60, 0.25);
+    --stud-highlight: rgba(100, 180, 120, 0.3);
+}
+
+/* Hyper-Realistic 3D Stud Construction */
+.stud {
+    margin: auto;
+    width: 68%;
+    height: 68%;
+    border-radius: 50%;
+    background: var(--brick-color);
+    box-shadow: 
+        /* Deep drop shadow under the stud */
+        2px 3px 5px rgba(0, 0, 0, 0.35),
+        -1px -1px 2px rgba(255, 255, 255, 0.2),
+        /* Inner rim highlights to imply thickness and rounded top */
+        inset 1px 1px 2px var(--stud-highlight),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.4);
+    /* Tiny top-left specular highlight gradient */
+    background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    user-select: none;
+    z-index: 10;
+}
+
+/* True Hardware Embossing for Logo */
+.lego-logo {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(4px, calc(var(--lego-unit) * 0.2), 10px);
+    font-style: italic;
+    font-weight: 800;
+    color: transparent;
+    text-shadow: 
+        0.5px 0.5px 0px rgba(255, 255, 255, 0.7),
+        -0.5px -0.5px 0px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+}
+
+/* Scattered 4K Layout - Cinematic Depth Framing (3 Core Blocks) */
+.block-pos-1 { --tx: 100px;  --ty: -60px; --rot: -8deg;  --s: 0.85;  --z: 1; --float-speed: 9s; --depth-blur: 4px; } /* Background Blur */
+.block-pos-2 { --tx: -40px; --ty: 10px;   --rot: 4deg;   --s: 1.0; --z: 3; --float-speed: 12s; --depth-blur: 1.5px; } /* Midground Soft */
+.block-pos-4 { --tx: 60px; --ty: 90px;  --rot: 18deg;  --s: 1.25;  --z: 5; --float-speed: 10s; --depth-blur: 0px; } /* Foreground Sharp Hero */
+
+/* Reveal Animation */
+.about-visuals.in-view .lego-brick {
+    opacity: 1;
+}
+
+/* Cinematic Product-Hover Intention */
+@media (hover: hover) and (pointer: fine) {
+    .lego-brick:hover {
+        /* Soft lift, calm interaction */
+        transform: rotate(var(--rot)) scale(calc(var(--s) * 1.02)) translateY(-4px) !important;
+        box-shadow: 
+            inset 1px 1px 3px rgba(255, 255, 255, 0.4),
+            inset -1px -1px 4px rgba(0, 0, 0, 0.1),
+            0 25px 50px rgba(0, 0, 0, 0.25); /* Lift shadow, no glow */
+        z-index: 100 !important;
+        /* Slight sharpness boost on focus */
+        filter: blur(0px) contrast(1.05);
+    }
+}
+
+/* ==========================================
+   QUOTE SECTION (PAGE 3)
+   ========================================== */
+.quote-section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.quote-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    text-align: center;
+    will-change: opacity, transform;
+    /* CSS animation handles entry, JS handles scrub-out */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.quote-section.in-view .quote-container {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.quote-text {
+    font-size: clamp(1.75rem, 4.8vw, 5.8rem);
+    line-height: 1.25;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    margin: 0;
+    width: 100%;
+}
+
+.quote-text .line {
+    display: block;
+    white-space: nowrap;
+}
+
+.base-text {
+    font-family: 'Panchang Semibold', sans-serif;
+    /* The base text is visible always, full opacity */
+}
+
+.thin-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Panchang Extralight', sans-serif;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+    transform: scale(1.08);
+    transform-origin: center;
+    letter-spacing: 0.04em;
+    /* Default variables for centering before JS kicks in */
+    --cursor-x: 50%;
+    --cursor-y: 50%;
+    /* Sharpened and expanded circular mask */
+    -webkit-mask-image: radial-gradient(
+        circle 280px at var(--cursor-x) var(--cursor-y),
+        rgba(0, 0, 0, 1) 0%,
+        rgba(0, 0, 0, 0.9) 30%,
+        rgba(0, 0, 0, 0.4) 60%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    mask-image: radial-gradient(
+        circle 280px at var(--cursor-x) var(--cursor-y),
+        rgba(0, 0, 0, 1) 0%,
+        rgba(0, 0, 0, 0.9) 30%,
+        rgba(0, 0, 0, 0.4) 60%,
+        rgba(0, 0, 0, 0) 100%
+    );
+}
+
+@media (max-width: 768px) {
+    .thin-text {
+        -webkit-mask-image: radial-gradient(
+            circle 140px at var(--cursor-x) var(--cursor-y),
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 0.9) 30%,
+            rgba(0, 0, 0, 0.4) 60%,
+            rgba(0, 0, 0, 0) 100%
+        );
+        mask-image: radial-gradient(
+            circle 140px at var(--cursor-x) var(--cursor-y),
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 0.9) 30%,
+            rgba(0, 0, 0, 0.4) 60%,
+            rgba(0, 0, 0, 0) 100%
+        );
+    }
+}
+
+/* ==========================================
+   BEYOND BUILDING SECTION (PAGE 4)
+   ========================================== */
+.beyond-section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.pace-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 100px;
+    color: #ffffff;
+}
+
+.pace-left {
+    text-align: left;
+    justify-self: start;
+    padding-left: 8vw;
+}
+
+.pace-right {
+    text-align: right;
+    justify-self: end;
+    padding-right: 8vw;
+    align-self: center;
+}
+
+.pace-heading {
+    font-size: clamp(48px, 6vw, 96px); /* Move base size to parent container */
+    line-height: 1.15;
+    margin-bottom: 0;
+    white-space: normal;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.pace-heading-top {
+    font-family: 'Panchang Regular', sans-serif;
+    font-size: 0.85em;
+    font-weight: 400;
+    color: #ffffff;
+    opacity: 0.85;
+}
+
+.pace-heading-middle {
+    font-family: 'Panchang Regular', sans-serif;
+    font-size: 0.8em;
+    font-weight: 400;
+    color: #ffffff;
+    opacity: 0.85;
+}
+
+.pace-word {
+    font-family: 'Panchang Semibold', sans-serif;
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-top: 5px;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    color: #ffffff;
+    opacity: 1;
+    transition: transform 0.2s ease-out, text-shadow 0.2s ease-out;
+    will-change: transform, filter, opacity;
+    transform-origin: right center;
+}
+
+.pace-paragraph {
+    max-width: 580px;
+    margin-right: auto;
+}
+
+.pace-paragraph p {
+    font-family: 'Panchang Regular', sans-serif;
+    font-size: clamp(16px, 1.4vw, 20px);
+    font-weight: 400;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 24px;
+    break-inside: avoid;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.pace-paragraph p:last-child {
+    margin-bottom: 0;
+}
+
+/* Reveal Animations mapped exactly to IntersectionObserver logic */
+.beyond-section.in-view .pace-heading {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.beyond-section.in-view .pace-paragraph p {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger delays exactly as previously requested for sequence */
+.beyond-section.in-view .pace-heading { transition-delay: 0.1s; }
+.beyond-section.in-view .pace-paragraph p:nth-child(1) { transition-delay: 0.25s; }
+.beyond-section.in-view .pace-paragraph p:nth-child(2) { transition-delay: 0.35s; }
+.beyond-section.in-view .pace-paragraph p:nth-child(3) { transition-delay: 0.45s; }
+.beyond-section.in-view .pace-paragraph p:nth-child(4) { transition-delay: 0.55s; }
+.beyond-section.in-view .pace-paragraph p:nth-child(5) { transition-delay: 0.65s; }
+
+/* ==========================================
+   TIME PROGRESSION SYSTEM
+   ========================================== */
+.placeholder-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    z-index: 10;
+}
+
+/* Cinematic Segment Boundaries */
+.placeholder-section::before,
+.placeholder-section::after {
+    content: '';
+    position: absolute;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.placeholder-section::before { top: 0; }
+.placeholder-section::after { bottom: 0; }
+
+/* ==========================================
+   MASTER QUOTE SECTION (JACK OF ALL TRADES)
+   ========================================== */
+.master-quote-section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8vh 6vw;
+    box-sizing: border-box;
+    overflow: hidden;
+    z-index: 10;
+}
+
+
+.master-quote-container {
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+}
+
+.master-quote-container > div {
+    font-family: 'Panchang Regular', sans-serif;
+    color: #ffffff;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: opacity 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1),
+                text-shadow 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+    margin: 1rem 0;
+}
+
+.master-quote-container .line-1 {
+    font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.master-quote-container .line-2 {
+    font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+}
+
+.master-quote-container .line-3 {
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .master-quote-container {
+        max-width: 90%;
+    }
+}
+
+/* Staggered Scroll Animation States */
+.master-quote-section.in-view .line-1 {
+    opacity: 0.7;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.1s;
+}
+
+.master-quote-section.in-view .line-2 {
+    opacity: 0.6;
+    transform: translateY(0) scale(1);
+    transition-delay: 0.25s;
+}
+
+.master-quote-section.in-view .line-3 {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    text-shadow: 0 0 30px rgba(255,255,255,0.2);
+    transition-delay: 0.4s;
+}
+
+/* ==========================================
+   GEAR SECTION (Horizontal Glass Device Carousel)
+   ========================================== */
+.gear-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    z-index: 10;
+}
+
+.gear-sticky-container {
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.gig-title {
+    position: absolute;
+    top: 6vh;
+    left: 4vw;
+    font-family: 'Panchang', sans-serif;
+    font-weight: 500;
+    font-size: clamp(2rem, 3.5vw, 4rem);
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.1em;
+    text-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.gear-track {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8vw;
+    width: max-content;
+    padding: 0 calc(50vw - 180px);
+    position: relative;
+    will-change: transform;
+}
+
+.gear-item {
+    position: relative;
+    flex: 0 0 360px;
+    height: 480px;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                opacity 0.6s cubic-bezier(0.165, 0.84, 0.44, 1),
+                filter 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transform-origin: center center;
+    opacity: 0.5;
+    transform: scale(0.9);
+    filter: blur(4px);
+    will-change: transform, opacity;
+}
+
+/* Active state */
+.gear-item.active {
+    opacity: 1;
+    transform: scale(1.05);
+    filter: blur(0px);
+    z-index: 5;
+}
+
+.gear-glass {
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    padding: 24px;
+    backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gear-item.active .gear-glass {
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.gear-glass img {
+    width: 100%;
+    max-height: 70%;
+    object-fit: contain;
+}
+
+.gear-glass h2 {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: white;
+    opacity: 0.9;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+}
+
+/* Global Video Container and Overlay (Hardware Interpolation Hooks) */
+.bg-video {
+    will-change: filter;
+    /* Transitions removed: Javascript controls the filter string frame-by-frame via inline styles */
+}
+
+.color-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: soft-light; /* Re-engineered blend mode to support deep layered gradients while retaining cloud definition */
+    will-change: background-color;
+    /* CSS transitions removed to prevent fighting Javascript's requestAnimationFrame */
 }
