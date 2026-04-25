@@ -159,6 +159,7 @@
 
         <!-- Sunset Section (Jack of all trades quote) -->
         <section class="master-quote-section" data-time="sunset">
+            <canvas id="faulty-terminal-bg"></canvas>
             <div class="master-quote-container">
                 <div class="line-1">Jack of all trades,</div>
                 <div class="line-2">master of none, but oftentimes</div>
@@ -175,32 +176,100 @@
                         <div class="gear-glass">
                             <img src="assets/macbook.png" alt="MacBook">
                             <h2>MacBook Pro M4 Pro</h2>
+                            <p class="gear-desc">Where most things take shape.</p>
                         </div>
                     </div>
                     <div class="gear-item" data-index="1">
                         <div class="gear-glass">
                             <img src="assets/ipad.png" alt="iPad">
                             <h2>iPad (9th Generation)</h2>
+                            <p class="gear-desc">Where ideas start before they’re ready.</p>
                         </div>
                     </div>
                     <div class="gear-item" data-index="2">
                         <div class="gear-glass">
                             <img src="assets/iphone.png" alt="iPhone">
                             <h2>iPhone 16</h2>
+                            <p class="gear-desc">Always testing. Always noticing.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Night Section -->
-        <section class="placeholder-section" data-time="night"></section>
+        <!-- Night Section (Music / Quiet Break) -->
+        <section class="music-section" data-time="night">
+            <div class="music-content-wrapper">
+                <div class="music-text-column">
+                    <h2 class="music-heading">In quieter moments.</h2>
+                    <p class="music-paragraph">
+                        I play the keyboard when things need to slow down.<br>
+                        It’s where I step away from the noise and just focus on rhythm, timing, and feel.<br>
+                        The piano gives me space to think — no pressure, no expectations, just time moving a little softer.
+                    </p>
+                </div>
+                <div class="music-visual-column">
+                    <div class="music-keyboard-container">
+                        <div class="keyboard-keys">
+                            <!-- 7 White Keys (1 Octave) -->
+                            <div class="key white-key"></div>
+                            <div class="key white-key"></div>
+                            <div class="key white-key"></div>
+                            <div class="key white-key"></div>
+                            <div class="key white-key"></div>
+                            <div class="key white-key"></div>
+                            <div class="key white-key"></div>
 
-        <!-- Late Night Section -->
-        <section class="placeholder-section" data-time="late-night"></section>
+                            <!-- 5 Black Keys (1 Octave) -->
+                            <div class="key black-key" style="left: calc(100% / 7 * 1)"></div>
+                            <div class="key black-key" style="left: calc(100% / 7 * 2)"></div>
+                            <div class="key black-key" style="left: calc(100% / 7 * 4)"></div>
+                            <div class="key black-key" style="left: calc(100% / 7 * 5)"></div>
+                            <div class="key black-key" style="left: calc(100% / 7 * 6)"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <!-- Midnight Section -->
-        <section class="placeholder-section" data-time="midnight"></section>
+        <!-- Late Night Section (Future) -->
+        <section class="future-section" data-time="late-night">
+            <div class="future-content-wrapper">
+                <h2 class="future-heading">
+                    <span class="heading-lead">Where I’m</span> 
+                    <span class="heading-focus">headed.</span>
+                </h2>
+                <div class="future-text-panel">
+                    <p class="future-paragraph">
+                        I’m still figuring things out — but I know the direction I want to move in. I’m working towards <span class="future-highlight">getting sharper</span> — not just at building, but at understanding what makes something <span class="future-highlight">feel right</span>. I want to design better experiences, build more refined websites, and then push into ideas that feel a little <span class="future-highlight">unexpected</span>. I’m going deeper into the tools I use — Figma, React, and everything around them — not just using them, but understanding them properly. At the same time, I want to <span class="future-highlight">explore beyond the screen</span> — hardware, microcontrollers, and anything that lets me create something tangible. I don’t want to stay in one lane. I want to keep exploring, refining, and pushing things further.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Midnight Section (Final) -->
+        <section class="final-section" data-time="midnight">
+            <div class="final-content-wrapper">
+                <div class="final-quote">
+                    <div class="final-line final-line-1">Still experimenting. Still refining.</div>
+                    <div class="final-line final-line-2">Somewhere between keys and code, I’m figuring it out.</div>
+                </div>
+                
+                <div class="final-socials">
+                    <a href="https://www.instagram.com/tharun_2109/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Open Instagram profile">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/tharun-s-m-9a69a6379/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Open LinkedIn profile">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                    </a>
+                    <a href="mailto:tharunsmohan@gmail.com" class="social-icon" aria-label="Send email">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    </a>
+                </div>
+            </div>
+            <!-- Very subtle fade-out at bottom -->
+            <div class="final-fade-bottom"></div>
+        </section>
 
     </div> <!-- End Scroll Section -->
 

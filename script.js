@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize Lenis
     const lenis = new Lenis({
         duration: 0.9,
-        lerp: 0.07,
+        lerp: 0.12,
         smoothWheel: true,
         smoothTouch: false,
         wheelMultiplier: 1.0
@@ -343,58 +343,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Milestones matrix defining the profound atmospheric curve [ pct, brightness, UI_Dim, topGradient[RGBA], midGradient[RGBA], botGradient[RGBA] ]
     const milestones = [
-        // Early Morning - Vivid pink + orange
+        // Early Morning - Soft, bright, cool tones
         {
-            pct: 0.00, b: 1.05, ui_dim: 1.00,
-            top: [255, 120, 80, 0.55], mid: [255, 100, 120, 0.50], bot: [255, 80, 160, 0.45]
+            pct: 0.00, b: 1.10, ui_dim: 1.00,
+            top: [160, 200, 255, 0.20], mid: [180, 210, 255, 0.25], bot: [200, 230, 255, 0.30]
         },
 
-        // Morning - Clean sky blue
+        // Late Morning - Slightly warmer, soft fade
         {
             pct: 0.15, b: 1.00, ui_dim: 1.00,
-            top: [120, 190, 255, 0.40], mid: [150, 210, 255, 0.35], bot: [180, 225, 255, 0.30]
+            top: [200, 200, 240, 0.30], mid: [220, 210, 230, 0.35], bot: [240, 220, 220, 0.35]
         },
 
-        // Noon - Brightest, crisp, slight cyan
+        // Afternoon - Balanced, slightly warm
         {
-            pct: 0.30, b: 1.05, ui_dim: 1.00,
-            top: [50, 170, 255, 0.45], mid: [0, 200, 255, 0.40], bot: [0, 220, 255, 0.35]
+            pct: 0.30, b: 0.90, ui_dim: 0.90,
+            top: [255, 200, 150, 0.40], mid: [255, 180, 120, 0.45], bot: [255, 160, 100, 0.45]
         },
 
-        // Golden Hour - Soft golden cinematic warmth
+        // Late Afternoon - Transitioning to Sunset
         {
-            pct: 0.45, b: 1.00, ui_dim: 0.90,
-            top: [255, 200, 120, 0.45], mid: [255, 180, 90, 0.40], bot: [255, 160, 70, 0.35]
+            pct: 0.45, b: 0.80, ui_dim: 0.80,
+            top: [240, 150, 100, 0.50], mid: [220, 120, 120, 0.55], bot: [200, 90, 140, 0.55]
         },
 
-        // Sunset - Strong contrast, orange + pink + purple
+        // Sunset - Warm + Darker
         {
-            pct: 0.60, b: 0.85, ui_dim: 0.80,
-            top: [255, 120, 90, 0.55], mid: [200, 90, 200, 0.45], bot: [80, 40, 150, 0.40]
+            pct: 0.60, b: 0.65, ui_dim: 0.70,
+            top: [180, 90, 140, 0.60], mid: [150, 70, 160, 0.65], bot: [120, 50, 180, 0.65]
         },
 
-        // Dusk - Muted blue
+        // Night - Cool, dark
         {
-            pct: 0.75, b: 0.65, ui_dim: 0.60,
-            top: [60, 90, 130, 0.50], mid: [50, 70, 110, 0.45], bot: [40, 60, 90, 0.40]
+            pct: 0.75, b: 0.50, ui_dim: 0.50,
+            top: [80, 60, 140, 0.70], mid: [60, 50, 120, 0.75], bot: [40, 40, 100, 0.75]
         },
 
-        // Night - Deep dark blue, minimal light
+        // Late Night - Deep tones
         {
-            pct: 0.88, b: 0.30, ui_dim: 0.35,
-            top: [10, 20, 40, 0.70], mid: [15, 30, 60, 0.65], bot: [20, 40, 80, 0.60]
+            pct: 0.88, b: 0.35, ui_dim: 0.35,
+            top: [40, 40, 80, 0.80], mid: [30, 30, 60, 0.80], bot: [20, 20, 40, 0.80]
         },
 
-        // Midnight - Near black
+        // Midnight - Near black but readable
         {
-            pct: 0.96, b: 0.15, ui_dim: 0.15,
-            top: [0, 0, 0, 0.92], mid: [5, 5, 10, 0.94], bot: [10, 10, 20, 0.96]
+            pct: 0.96, b: 0.20, ui_dim: 0.20,
+            top: [20, 20, 30, 0.85], mid: [10, 10, 20, 0.85], bot: [5, 5, 10, 0.85]
         },
 
         // End of Scroll (Hold Midnight)
         {
-            pct: 1.00, b: 0.15, ui_dim: 0.15,
-            top: [0, 0, 0, 0.92], mid: [5, 5, 10, 0.94], bot: [10, 10, 20, 0.96]
+            pct: 1.00, b: 0.20, ui_dim: 0.20,
+            top: [20, 20, 30, 0.85], mid: [10, 10, 20, 0.85], bot: [5, 5, 10, 0.85]
         }
     ];
 
@@ -434,39 +434,138 @@ document.addEventListener("DOMContentLoaded", () => {
         
         lenis.on('scroll', ScrollTrigger.update);
 
-        function getScrollAmount() {
-            let trackWidth = gearTrack.scrollWidth;
-            return -(trackWidth - window.innerWidth);
-        }
-
-        const tween = gsap.to(gearTrack, {
-            x: getScrollAmount,
-            ease: "none"
-        });
-
         ScrollTrigger.create({
             trigger: gearSection,
             start: "top top",
-            end: () => `+=${getScrollAmount() * -1}`,
+            end: "+=2000", // Fixed scroll distance for the entire interaction
             pin: true,
-            animation: tween,
             scrub: 1,
-            invalidateOnRefresh: true,
             onUpdate: (self) => {
                 const total = gearItems.length;
-                let activeFloat = self.progress * (total - 1);
-                let closestIndex = Math.round(activeFloat);
+                let closestIndex = Math.round(self.progress * (total - 1));
                 
                 gearItems.forEach((item, i) => {
-                    if (i === closestIndex) {
+                    let dist = Math.abs(closestIndex - i);
+                    
+                    if (dist === 0) {
                         item.classList.add('active');
+                        item.classList.remove('side', 'far');
+                        item.style.zIndex = 10;
+                    } else if (dist === 1) {
+                        item.classList.add('side');
+                        item.classList.remove('active', 'far');
+                        item.style.zIndex = 5;
                     } else {
-                        item.classList.remove('active');
+                        item.classList.add('far');
+                        item.classList.remove('active', 'side');
+                        item.style.zIndex = 1;
                     }
                 });
             }
         });
     }
+
+    // ==========================================
+    // GSAP SCROLLTRIGGER FOR MUSIC SECTION
+    // ==========================================
+    const musicSection = document.querySelector('.music-section');
+    const musicHeading = document.querySelector('.music-heading');
+    const musicParagraph = document.querySelector('.music-paragraph');
+    const musicKeyboard = document.querySelector('.music-keyboard-container');
+
+    if (musicSection && musicHeading && musicParagraph) {
+        ScrollTrigger.create({
+            trigger: musicSection,
+            start: "top 50%", // Trigger when section hits the middle of the screen
+            onEnter: () => {
+                gsap.to(musicHeading, {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1.5,
+                    ease: "power2.out"
+                });
+                gsap.to(musicParagraph, {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1.5,
+                    delay: 0.2,
+                    ease: "power2.out"
+                });
+                if (musicKeyboard) {
+                    gsap.to(musicKeyboard, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.5,
+                        delay: 0.4,
+                        ease: "power2.out"
+                    });
+                }
+            },
+            onLeaveBack: () => {
+                // Reset when scrolling back up
+                gsap.set([musicHeading, musicParagraph], { y: 20, opacity: 0 });
+                if (musicKeyboard) {
+                    gsap.set(musicKeyboard, { y: 30, opacity: 0 });
+                }
+            }
+        });
+    }
+
+    // ==========================================
+    // FUTURE SECTION ANIMATION
+    // ==========================================
+    const futureSection = document.querySelector('.future-section');
+    const headingFocus = document.querySelector('.heading-focus');
+
+    if (futureSection && headingFocus) {
+        gsap.to(headingFocus, {
+            scale: 1.05,
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: {
+                trigger: futureSection,
+                start: "top 70%",
+                end: "center 40%",
+                scrub: 1.5 // Smooth gradual scrubbing
+            }
+        });
+    }
+
+    // ==========================================
+    // FINAL SECTION ANIMATION
+    // ==========================================
+    const finalSection = document.querySelector('.final-section');
+    const finalLines = document.querySelectorAll('.final-line');
+    const finalSocials = document.querySelector('.final-socials');
+
+    if (finalSection && finalLines.length > 0 && finalSocials) {
+        ScrollTrigger.create({
+            trigger: finalSection,
+            start: "top 60%", 
+            onEnter: () => {
+                gsap.to(finalLines, {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.7,
+                    stagger: 0.15, // Fast sequential reveal
+                    delay: 0.05, // Almost immediate
+                    ease: "cubic-bezier(0.22, 1, 0.36, 1)"
+                });
+                gsap.to(finalSocials, {
+                    scale: 1,
+                    opacity: 1,
+                    duration: 0.45,
+                    delay: 0.25, // Snappy appearance right after quote
+                    ease: "cubic-bezier(0.22, 1, 0.36, 1)"
+                });
+            },
+            onLeaveBack: () => {
+                gsap.set(finalLines, { y: 10, opacity: 0 });
+                gsap.set(finalSocials, { scale: 0.9, opacity: 0 });
+            }
+        });
+    }
+
 
     // Set initial cinematic hero playback rate
     if (videoElement) {
@@ -683,6 +782,127 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Start animation loop
         requestAnimationFrame(animateCursorMask);
+    }
+
+    // ==========================================
+    // FAULTY TERMINAL BACKGROUND ANIMATION (QUOTE SECTION)
+    // ==========================================
+    const faultyCanvas = document.getElementById('faulty-terminal-bg');
+    if (faultyCanvas) {
+        const ctx = faultyCanvas.getContext('2d');
+        let width = 0;
+        let height = 0;
+        let dpr = window.devicePixelRatio || 2;
+        
+        let config = {
+            glitchAmount: 0.2, 
+            flickerAmount: 0.3,
+            scanlineIntensity: 0.1,
+            chromaticAberration: 0.015,
+            brightness: 1.15
+        };
+
+        const offscreen = document.createElement('canvas');
+        const offCtx = offscreen.getContext('2d');
+
+        const resizeFaulty = () => {
+            width = faultyCanvas.offsetWidth || window.innerWidth * 0.65;
+            height = faultyCanvas.offsetHeight || window.innerHeight * 0.4;
+            
+            faultyCanvas.width = width * dpr;
+            faultyCanvas.height = height * dpr;
+            
+            offscreen.width = width * dpr;
+            offscreen.height = height * dpr;
+
+            // Generate random terminal content once to save GPU
+            offCtx.fillStyle = '#ffffff';
+            offCtx.font = `${14 * dpr}px monospace`;
+            offCtx.textBaseline = 'top';
+            
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;':,./<>?";
+            
+            for (let y = 0; y < offscreen.height; y += 20 * dpr) {
+                for (let x = 0; x < offscreen.width; x += 120 * dpr) {
+                    if (Math.random() > 0.3) {
+                        let str = "";
+                        let len = Math.floor(Math.random() * 15) + 5;
+                        for (let i = 0; i < len; i++) {
+                            str += chars[Math.floor(Math.random() * chars.length)];
+                        }
+                        offCtx.fillText(str, x, y);
+                    }
+                }
+            }
+        };
+        
+        window.addEventListener('resize', resizeFaulty);
+        // Delay initial resize slightly to ensure CSS bounds are computed
+        setTimeout(resizeFaulty, 100);
+
+        const renderFaulty = () => {
+            // Only animate if in view
+            const rect = faultyCanvas.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0 && width > 0) {
+                ctx.clearRect(0, 0, faultyCanvas.width, faultyCanvas.height);
+                
+                // 1. Flicker
+                let flicker = Math.random() < config.flickerAmount ? (0.7 + Math.random() * 0.3) : 1.0;
+                let isGlitching = Math.random() < config.glitchAmount;
+                let shiftX = faultyCanvas.width * config.chromaticAberration;
+
+                // 2. Chromatic split drawing
+                ctx.globalCompositeOperation = 'source-over';
+                
+                // Draw left ghost
+                ctx.globalAlpha = (flicker * config.brightness) * 0.5;
+                ctx.drawImage(offscreen, -shiftX, 0);
+                
+                // Draw right ghost
+                ctx.drawImage(offscreen, shiftX, 0);
+                
+                // Draw center crisp
+                ctx.globalAlpha = flicker * config.brightness;
+                ctx.drawImage(offscreen, 0, 0);
+                
+                // 3. Glitch Slices
+                if (isGlitching) {
+                    let slices = Math.floor(Math.random() * 4) + 1;
+                    for (let i = 0; i < slices; i++) {
+                        let sy = Math.random() * faultyCanvas.height;
+                        let sh = Math.random() * (faultyCanvas.height / 5);
+                        let offset = (Math.random() - 0.5) * 80 * dpr;
+                        
+                        ctx.drawImage(
+                            faultyCanvas, 
+                            0, sy, faultyCanvas.width, sh, 
+                            offset, sy, faultyCanvas.width, sh 
+                        );
+                    }
+                }
+
+                // 4. Scanlines
+                ctx.fillStyle = `rgba(0, 0, 0, ${config.scanlineIntensity})`;
+                for (let y = 0; y < faultyCanvas.height; y += 4 * dpr) {
+                    ctx.fillRect(0, y, faultyCanvas.width, 1 * dpr);
+                }
+            }
+
+            requestAnimationFrame(renderFaulty);
+        };
+        
+        requestAnimationFrame(renderFaulty);
+
+        // Hover interaction
+        const quoteSection = document.querySelector('.master-quote-section');
+        if (quoteSection) {
+            quoteSection.addEventListener('mouseenter', () => {
+                gsap.to(config, { glitchAmount: 0.3, flickerAmount: 0.4, duration: 0.4 });
+            });
+            quoteSection.addEventListener('mouseleave', () => {
+                gsap.to(config, { glitchAmount: 0.2, flickerAmount: 0.3, duration: 0.8 });
+            });
+        }
     }
 });
 
