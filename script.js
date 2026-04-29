@@ -373,28 +373,28 @@ document.addEventListener("DOMContentLoaded", () => {
             top: [180, 90, 140, 0.60], mid: [150, 70, 160, 0.65], bot: [120, 50, 180, 0.65]
         },
 
-        // Night - Cool, dark
+        // Night - Cool, dark but transparent enough
         {
-            pct: 0.75, b: 0.50, ui_dim: 0.50,
-            top: [80, 60, 140, 0.70], mid: [60, 50, 120, 0.75], bot: [40, 40, 100, 0.75]
+            pct: 0.75, b: 0.60, ui_dim: 0.60,
+            top: [80, 60, 140, 0.45], mid: [60, 50, 120, 0.50], bot: [40, 40, 100, 0.50]
         },
 
         // Late Night - Deep tones
         {
-            pct: 0.88, b: 0.35, ui_dim: 0.35,
-            top: [40, 40, 80, 0.80], mid: [30, 30, 60, 0.80], bot: [20, 20, 40, 0.80]
+            pct: 0.88, b: 0.50, ui_dim: 0.50,
+            top: [40, 40, 80, 0.55], mid: [30, 30, 60, 0.55], bot: [20, 20, 40, 0.55]
         },
 
-        // Midnight - Near black but readable
+        // Midnight - Readable darkness
         {
-            pct: 0.96, b: 0.20, ui_dim: 0.20,
-            top: [20, 20, 30, 0.85], mid: [10, 10, 20, 0.85], bot: [5, 5, 10, 0.85]
+            pct: 0.96, b: 0.40, ui_dim: 0.40,
+            top: [20, 20, 30, 0.60], mid: [10, 10, 20, 0.60], bot: [5, 5, 10, 0.60]
         },
 
         // End of Scroll (Hold Midnight)
         {
-            pct: 1.00, b: 0.20, ui_dim: 0.20,
-            top: [20, 20, 30, 0.85], mid: [10, 10, 20, 0.85], bot: [5, 5, 10, 0.85]
+            pct: 1.00, b: 0.40, ui_dim: 0.40,
+            top: [20, 20, 30, 0.60], mid: [10, 10, 20, 0.60], bot: [5, 5, 10, 0.60]
         }
     ];
 
@@ -537,6 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const finalSection = document.querySelector('.final-section');
     const finalLines = document.querySelectorAll('.final-line');
     const finalSocials = document.querySelector('.final-socials');
+    const finalSignature = document.querySelector('.final-signature');
 
     if (finalSection && finalLines.length > 0 && finalSocials) {
         ScrollTrigger.create({
@@ -903,6 +904,139 @@ document.addEventListener("DOMContentLoaded", () => {
                 gsap.to(config, { glitchAmount: 0.2, flickerAmount: 0.3, duration: 0.8 });
             });
         }
+    }
+
+    // ==========================================
+    // FLOATING F1 WIDGET
+    // ==========================================
+    const f1Data = [
+        { name: "AUSTRALIA GP", date: "MAR 06–08", img: "assets/australia.png" },
+        { name: "CHINA GP", date: "MAR 13–15", img: "assets/china.png" },
+        { name: "JAPAN GP", date: "MAR 27–29", img: "assets/japan.png" },
+        { name: "BAHRAIN GP", date: "APR 10–12", img: "assets/bahrain.png" },
+        { name: "SAUDI ARABIA GP", date: "APR 17–19", img: "assets/saudi.png" },
+        { name: "MIAMI GP", date: "MAY 01–03", img: "assets/miami.png" },
+        { name: "CANADA GP", date: "MAY 22–24", img: "assets/canada.png" },
+        { name: "MONACO GP", date: "JUN 05–07", img: "assets/monaco.png" },
+        { name: "SPAIN GP", date: "JUN 12–14", img: "assets/spain.png" },
+        { name: "AUSTRIA GP", date: "JUN 26–28", img: "assets/austria.png" },
+        { name: "BRITISH GP", date: "JUL 03–05", img: "assets/greatbritain.png" },
+        { name: "BELGIUM GP", date: "JUL 17–19", img: "assets/belgian.png" },
+        { name: "HUNGARY GP", date: "JUL 24–26", img: "assets/hungary.png" },
+        { name: "NETHERLANDS GP", date: "AUG 21–23", img: "assets/netherlands.png" },
+        { name: "ITALY GP", date: "SEP 04–06", img: "assets/italy.png" },
+        { name: "SPAIN GP", date: "SEP 11–13", img: "assets/spainmadrid.png" },
+        { name: "AZERBAIJAN GP", date: "SEP 24–26", img: "assets/azerbaijan.png" },
+        { name: "SINGAPORE GP", date: "OCT 09–11", img: "assets/singapore.png" },
+        { name: "UNITED STATES GP", date: "OCT 23–25", img: "assets/unitedstates.png" },
+        { name: "MEXICO GP", date: "OCT 30–NOV 01", img: "assets/mexico.png" },
+        { name: "BRAZIL GP", date: "NOV 06–08", img: "assets/brazil.png" },
+        { name: "LAS VEGAS GP", date: "NOV 20–22", img: "assets/lasvegas.png" },
+        { name: "QATAR GP", date: "NOV 27–29", img: "assets/qatar.png" },
+        { name: "ABU DHABI GP", date: "DEC 04–06", img: "assets/abudhabi.png" }
+    ];
+
+    let currentF1Index = 0;
+    const f1Img = document.getElementById('f1-circuit-img');
+    const f1Name = document.getElementById('f1-race-name');
+    const f1Date = document.getElementById('f1-date');
+    const f1Info = document.querySelector('.f1-info');
+
+    const f1Widget = document.getElementById('f1-widget');
+
+    if (f1Img && f1Name && f1Date && f1Info && f1Widget) {
+        let cycleInterval;
+        let isHovered = false;
+
+        const getNextGpIndex = () => {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            
+            for (let i = 0; i < f1Data.length; i++) {
+                const dateStr = f1Data[i].date;
+                const parts = dateStr.split(/[-–]/);
+                let raceDate;
+                
+                if (parts.length > 1) {
+                    const endPart = parts[1].trim();
+                    if (/[a-zA-Z]/.test(endPart)) {
+                        raceDate = new Date(`${endPart} ${currentYear}`);
+                    } else {
+                        const month = parts[0].trim().split(' ')[0];
+                        raceDate = new Date(`${month} ${endPart} ${currentYear}`);
+                    }
+                } else {
+                    raceDate = new Date(`${dateStr} ${currentYear}`);
+                }
+                
+                // Add 1 day to raceDate so it still shows on the final day of the race
+                raceDate.setDate(raceDate.getDate() + 1);
+                
+                if (now <= raceDate) {
+                    return i;
+                }
+            }
+            return 0; 
+        };
+
+        const updateWidgetData = (index) => {
+            const nextData = f1Data[index];
+            f1Img.src = nextData.img;
+            f1Name.textContent = nextData.name;
+            f1Date.textContent = nextData.date;
+        };
+
+        const startCycle = () => {
+            clearInterval(cycleInterval);
+            cycleInterval = setInterval(() => {
+                if (isHovered) return;
+                
+                f1Img.style.opacity = '0';
+                f1Info.style.opacity = '0';
+                
+                setTimeout(() => {
+                    if (isHovered) return;
+                    currentF1Index = (currentF1Index + 1) % f1Data.length;
+                    updateWidgetData(currentF1Index);
+                    
+                    f1Img.style.opacity = '1';
+                    f1Info.style.opacity = '1';
+                }, 500); 
+            }, 4000); 
+        };
+
+        const stopCycle = () => {
+            clearInterval(cycleInterval);
+        };
+
+        startCycle();
+
+        f1Widget.addEventListener('mouseenter', () => {
+            isHovered = true;
+            stopCycle();
+            f1Widget.classList.add('paused');
+            
+            const nextIndex = getNextGpIndex();
+            
+            if (currentF1Index !== nextIndex) {
+                f1Img.style.opacity = '0';
+                f1Info.style.opacity = '0';
+                
+                setTimeout(() => {
+                    currentF1Index = nextIndex;
+                    updateWidgetData(currentF1Index);
+                    
+                    f1Img.style.opacity = '1';
+                    f1Info.style.opacity = '1';
+                }, 300);
+            }
+        });
+
+        f1Widget.addEventListener('mouseleave', () => {
+            isHovered = false;
+            f1Widget.classList.remove('paused');
+            startCycle();
+        });
     }
 });
 
